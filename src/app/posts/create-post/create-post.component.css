@@ -1,0 +1,45 @@
+mat-form-field,textarea {
+    width: 100%;
+}
+
+mat-spinner {
+    margin: auto;
+}
+
+.mat-stroked-button {
+    border: 1px solid currentColor;
+    padding: 0px 14px;
+    line-height: 34px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.mat-raised-button {
+    box-sizing: border-box;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: baseline;
+    text-align: center;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+    border-radius: 4px;
+    overflow: visible;
+    transform: translate3d(0, 0, 0);
+    transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1),box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 1rem 0 0;
+}
+
+input[type='file']  {
+    visibility: hidden;
+}
