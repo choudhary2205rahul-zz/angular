@@ -4,6 +4,9 @@ import {Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {map} from "rxjs/operators";
 import {Router} from "@angular/router";
+import {environment} from "../../environments/environment";
+
+const BACKEND_URL = `${environment.API_URL}/posts`;
 
 @Injectable({
     providedIn: 'root'
@@ -23,6 +26,7 @@ export class PostService {
                 title: string,
                 description: string
                 image: File,
+                creator: string
             }
         }>(`http://localhost:3000/api/posts/${id}`);
     }
@@ -30,7 +34,7 @@ export class PostService {
     // GET ALL
     getPosts(postsPerPage: number, currentPage: number) {
         const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
-        this.http.get<{ message: string, posts: Post[], postsCount: number}>('http://localhost:3000/api/posts' + queryParams)
+        this.http.get<{ message: string, posts: Post[], postsCount: number}>(BACKEND_URL + queryParams)
             .pipe(map((postData) => {
                 return {
                     posts: postData.posts.map((post: any) => {
@@ -38,7 +42,8 @@ export class PostService {
                             title: post.title,
                             description: post.description,
                             id: post._id,
-                            image: post.image
+                            image: post.image,
+                            creator: post.creator
                         }
                     }),
                     postsCount: postData.postsCount
@@ -66,16 +71,18 @@ export class PostService {
             formData.append('title', post.title);
             formData.append('description', post.description);
             formData.append('image', post.image, post.title);
+            formData.append('creator', post.creator);
         } else {
             formData = {
                 id: post.id,
                 title: post.title,
                 description: post.description,
-                image: post.image
+                image: post.image,
+                creator: post.creator
             }
         }
 
-        this.http.put<{ message: string, post: Post, postsCount: number }>(`http://localhost:3000/api/posts/${id}`, formData).subscribe((data) => {
+        this.http.put<{ message: string, post: Post, postsCount: number }>(`${BACKEND_URL}/${id}`, formData).subscribe((data) => {
             /*const updatedPosts = [...this.posts];
             const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
 
@@ -89,7 +96,7 @@ export class PostService {
             updatedPosts[oldPostIndex] = post;
             this.posts = updatedPosts;
             this.postsUpdated.next({posts: [...this.posts], postsCount: data.postsCount});*/
-            this.router.navigate(['/']);
+            this.router.navigate(['/posts/list']);
         });
     }
 
@@ -101,7 +108,7 @@ export class PostService {
         formData.append('description', post.description);
         formData.append('image', post.image, post.title);
         /*const newPost: Post = {id: post.id, description: post.description, title: post.title, image: post.image};*/
-        this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', formData).subscribe((data) => {
+        this.http.post<{ message: string, post: Post }>(BACKEND_URL, formData).subscribe((data) => {
            /* const postRes: Post = {
                 id: data.post.id,
                 title: data.post.title,
@@ -110,7 +117,7 @@ export class PostService {
             }
             this.posts.push(postRes);
             this.postsUpdated.next([...this.posts]);*/
-            this.router.navigate(['/']);
+            this.router.navigate(['/posts/list']);
         });
     }
 
@@ -122,6 +129,6 @@ export class PostService {
             this.postsUpdated.next([...this.posts]);
         });*/
 
-        return this.http.delete<{ message: string }>(`http://localhost:3000/api/posts/${id}`);
+        return this.http.delete<{ message: string }>(`${BACKEND_URL}/${id}`);
     }
 }

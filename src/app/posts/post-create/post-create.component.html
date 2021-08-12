@@ -22,7 +22,7 @@
         <button mat-raised-button color="primary" type="submit">Create Post</button>
     </form>-->
 
-    <form [formGroup]="form" (ngSubmit)="onSavePost()" *ngIf="!isLoading">
+    <form [formGroup]="form" (ngSubmit)="onSaveAndUpdatePost()" *ngIf="!isLoading">
         <mat-form-field>
             <input placeholder="Title" matInput type="text" name="title" formControlName="title">
             <mat-error *ngIf="form.get('title')!.invalid">{{ "Title can\'t be empty" }}</mat-error>

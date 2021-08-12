@@ -2,5 +2,6 @@ export interface Post {
     id: string;
     title: string;
     description: string;
-    image: File
+    image: File,
+    creator: any
 }

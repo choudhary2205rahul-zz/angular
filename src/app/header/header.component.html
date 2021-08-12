@@ -2,9 +2,14 @@
     <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
         <mat-icon>menu</mat-icon>
     </button>
-    <span><a routerLink="/">Blog</a></span>
+    <span><a routerLink="/posts/list">Blog</a></span>
     <span class="spacer"></span>
     <ul>
-        <a mat-button routerLink="/create" routerLinkActive="mat-accent">New Post</a>
+        <a *ngIf="isUserAuthenticated" mat-button routerLink="/posts/create" routerLinkActive="mat-accent">New Post</a>
+
+        <a *ngIf="!isUserAuthenticated" mat-button routerLink="/signup" routerLinkActive="mat-accent">Signup</a>
+        <a *ngIf="!isUserAuthenticated" mat-button routerLink="/login" routerLinkActive="mat-accent">Login</a>
+
+        <button *ngIf="isUserAuthenticated" mat-button (click)="onLogout()">Logout</button>
     </ul>
 </mat-toolbar>

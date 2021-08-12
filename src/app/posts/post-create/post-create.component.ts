@@ -7,23 +7,23 @@ import {mimeType} from "./mime-type.validator";
 
 @Component({
     selector: 'app-create-post',
-    templateUrl: './create-post.component.html',
-    styleUrls: ['./create-post.component.css']
+    templateUrl: './post-create.component.html',
+    styleUrls: ['./post-create.component.css']
 })
-export class CreatePostComponent implements OnInit {
+export class PostCreateComponent implements OnInit {
 
     // @ts-ignore
-    post: Post = {id:'', title:'', description:'', image: null};
+    post: Post = {id: '', title: '', description: '', image: null};
     private mode = 'create';
     private postId: string = '';
     isLoading = false;
-    imagePreview:string = '';
+    imagePreview: string = '';
 
-    form:FormGroup = new FormGroup({
+    form: FormGroup = new FormGroup({
         'id': new FormControl(null),
         'title': new FormControl(null, {validators: [Validators.required, Validators.minLength(3)]}),
         'description': new FormControl(null, {validators: [Validators.required]}),
-        'image': new FormControl(null, {validators: [Validators.required], asyncValidators: [mimeType]})
+        'image': new FormControl(null, {validators: [Validators.required], asyncValidators: [mimeType]}),
     });
 
     //@Output() postCreated = new EventEmitter<Post>();
@@ -42,13 +42,21 @@ export class CreatePostComponent implements OnInit {
                 this.postService.getPost(this.postId).subscribe(data => {
                     // Hide Spinner
                     this.isLoading = false;
-                    this.post = {id: data.post._id, title: data.post.title, description: data.post.description, image: data.post.image};
+                    this.post = {
+                        id: data.post._id,
+                        title: data.post.title,
+                        description: data.post.description,
+                        image: data.post.image,
+                        creator: data.post.creator
+                    };
                     this.form.setValue({
                         'id': data.post._id,
                         'title': data.post.title,
                         'description': data.post.description,
                         'image': data.post.image
                     });
+                }, error => {
+                    this.isLoading = false
                 });
             } else {
                 this.mode = 'create';
@@ -57,7 +65,7 @@ export class CreatePostComponent implements OnInit {
         });
     }
 
-    onSavePost() {
+    onSaveAndUpdatePost() {
 
         if (this.form.invalid) {
             return;
@@ -65,13 +73,25 @@ export class CreatePostComponent implements OnInit {
 
         this.isLoading = true;
 
-        if (this.mode === 'create')  {
-            this.post = {id: '', title: this.form.value.title, description: this.form.value.description, image: this.form.value.image}
+        if (this.mode === 'create') {
+            this.post = {
+                id: '',
+                title: this.form.value.title,
+                description: this.form.value.description,
+                image: this.form.value.image,
+                creator: null
+            }
             //this.postCreated.emit(this.post);
             this.postService.addPost(this.post);
         } else {
-            this.post = {id: this.postId, title: this.form.value.title, description: this.form.value.description, image: this.form.value.image}
-            this.postService.updatePost(this.postId,this.post);
+            this.post = {
+                id: this.postId,
+                title: this.form.value.title,
+                description: this.form.value.description,
+                image: this.form.value.image,
+                creator: null
+            }
+            this.postService.updatePost(this.postId, this.post);
         }
         this.form.reset();
     }
